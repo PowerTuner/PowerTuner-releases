@@ -195,7 +195,7 @@ jobs:
         run: >
           "## Release content`r`n
           `r`n
-          ### All                  
+          ### All`r`n
           [PowerTunerDaemon $env:PWTD_TAG](https://github.com/PowerTuner/PowerTunerDaemon/tree/$env:PWTD_TAG)`r`n
           [PowerTunerConsole $env:PWTCS_TAG](https://github.com/PowerTuner/PowerTunerConsole/tree/$env:PWTCS_TAG)`r`n
           [PowerTunerClient $env:PWTC_TAG](https://github.com/PowerTuner/PowerTunerClient/tree/$env:PWTC_TAG)`r`n
