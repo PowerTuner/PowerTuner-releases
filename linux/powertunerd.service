@@ -1,0 +1,14 @@
+[Unit]
+Description="PowerTuner daemon"
+After=network.target dbus.socket
+Requires=sockets.target dbus.socket
+
+[Service]
+Type=notify-reload
+NotifyAccess=main
+ExecStart=/usr/bin/PowerTunerDaemon --sd
+Restart=on-abnormal
+RestartSec=15s
+
+[Install]
+WantedBy=multi-user.target

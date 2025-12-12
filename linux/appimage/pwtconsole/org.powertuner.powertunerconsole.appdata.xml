@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>org.powertuner.powertunerconsole</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>PowerTunerConsole</name>
+	<summary>PowerTuner Console Client</summary>
+	<description>
+		<p>
+			Official PowerTuner console client to communicate with PowerTuner daemon,
+			gamepad first, touch friendly, for couch gaming and handheld devices.
+		</p>
+	</description>
+	<launchable type="desktop-id">org.powertuner.powertunerconsole.desktop</launchable>
+	<url type="homepage">https://github.com/PowerTuner/PowerTunerConsole</url>
+	<url type="bugtracker">https://github.com/PowerTuner/PowerTunerConsole/issues</url>
+	<url type="help">https://github.com/PowerTuner/PowerTunerConsole#powertunerconsole</url>
+	<provides>
+		<id>org.powertuner.powertunerconsole.desktop</id>
+	</provides>
+	<categories>
+		<category>Utility</category>
+	</categories>
+	<developer id="org.powertuner.kylon">
+		<name>kylon</name>
+	</developer>
+	<content_rating type="oars-1.1" />
+	<keywords>
+		<keyword translate="no">PowerTuner</keyword>
+		<keyword>tuning</keyword>
+		<keyword>tweaks</keyword>
+	</keywords>
+	<screenshots>
+		<screenshot type="default"><image>https://raw.githubusercontent.com/PowerTuner/PowerTuner-releases/main/screens/console_shot.png</image></screenshot>
+	</screenshots>
+</component>

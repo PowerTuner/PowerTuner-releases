@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>org.powertuner.powertunerclient</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>PowerTunerClient</name>
+	<summary>PowerTuner Desktop Client</summary>
+	<description>
+		<p>
+			Official PowerTuner desktop client to communicate with PowerTuner daemon,
+			with a classic desktop UI controlled by mouse and keyboard.
+		</p>
+	</description>
+	<launchable type="desktop-id">org.powertuner.powertunerclient.desktop</launchable>
+	<url type="homepage">https://github.com/orgs/PowerTuner</url>
+	<url type="bugtracker">https://github.com/PowerTuner/PowerTunerClient/issues</url>
+	<url type="help">https://github.com/PowerTuner/PowerTunerClient#powertuner-client</url>
+	<provides>
+		<id>org.powertuner.powertunerclient.desktop</id>
+	</provides>
+	<categories>
+		<category>Utility</category>
+	</categories>
+	<developer id="org.powertuner.kylon">
+		<name>kylon</name>
+	</developer>
+	<content_rating type="oars-1.1" />
+	<keywords>
+		<keyword translate="no">PowerTuner</keyword>
+		<keyword>tuning</keyword>
+		<keyword>tweaks</keyword>
+	</keywords>
+	<screenshots>
+		<screenshot type="default"><image>https://raw.githubusercontent.com/PowerTuner/PowerTuner-releases/main/screens/client_shot.png</image></screenshot>
+	</screenshots>
+</component>

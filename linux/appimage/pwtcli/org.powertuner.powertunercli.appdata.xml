@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>org.powertuner.powertunercli</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>PowerTunerCLI</name>
+	<summary>PowerTuner CLI Client</summary>
+	<description>
+		<p>
+			Official command-line PowerTuner client to communicate with PowerTuner daemon,
+			output is in JSON format to allow easy integration in scripts.
+		</p>
+	</description>
+	<launchable type="desktop-id">org.powertuner.powertunercli.desktop</launchable>
+	<url type="homepage">https://github.com/orgs/PowerTuner</url>
+	<url type="bugtracker">https://github.com/PowerTuner/PowerTunerCLI/issues</url>
+	<url type="help">https://github.com/PowerTuner/PowerTunerCLI#powertunercli</url>
+	<provides>
+		<id>org.powertuner.powertunercli.desktop</id>
+	</provides>
+	<categories>
+		<category>Utility</category>
+	</categories>
+	<developer id="org.powertuner.kylon">
+		<name>kylon</name>
+	</developer>
+	<content_rating type="oars-1.1" />
+	<keywords>
+		<keyword translate="no">PowerTuner</keyword>
+		<keyword>tuning</keyword>
+		<keyword>tweaks</keyword>
+	</keywords>
+</component>
