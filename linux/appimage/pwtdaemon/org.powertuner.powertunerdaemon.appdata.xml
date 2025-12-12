@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>org.powertuner.powertunerdaemon</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>PowerTunerDaemon</name>
+	<summary>PowerTuner Daemon</summary>
+	<description>
+		<p>
+			Official PowerTuner daemon, requires root privileges, runs a TCP server for clients to connect to, default port is 56000.
+		</p>
+	</description>
+	<launchable type="desktop-id">org.powertuner.powertunerdaemon.desktop</launchable>
+	<url type="homepage">https://github.com/PowerTuner</url>
+	<url type="bugtracker">https://github.com/PowerTuner/PowerTunerDaemon/issues</url>
+	<url type="help">https://github.com/PowerTuner/PowerTunerDaemon#powertunerdaemon</url>
+	<provides>
+		<id>org.powertuner.powertunerdaemon.desktop</id>
+	</provides>
+	<categories>
+		<category>Utility</category>
+	</categories>
+	<developer id="org.powertuner.kylon">
+		<name>kylon</name>
+	</developer>
+	<content_rating type="oars-1.1" />
+	<keywords>
+		<keyword translate="no">PowerTuner</keyword>
+		<keyword>tuning</keyword>
+		<keyword>tweaks</keyword>
+	</keywords>
+</component>

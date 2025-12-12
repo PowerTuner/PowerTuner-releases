@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=PowerTunerDaemon
+Comment="PowerTuner Daemon"
+Exec=PowerTunerDaemon
+Icon=powerTunerDaemon
+Categories=Utility
