@@ -1,0 +1,538 @@
+name: release
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'version.txt'
+
+  workflow_dispatch:
+
+jobs:
+  windows_release:
+    runs-on: windows-latest
+
+    outputs:
+      win_release_pkg_id: ${{steps.win_release_zip.outputs.artifact-id}}
+      rel_notes_pkg_id: ${{steps.rel_notes.outputs.artifact-id}}
+
+    steps:
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.1'
+          modules: qtimageformats qtmultimedia qtspeech qtlottie
+
+      - name: Clone PowerTunerDaemon
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerDaemon
+          path: PowerTunerDaemon
+          submodules: true
+
+      - name: get daemon tag
+        run: |
+          git -C PowerTunerDaemon fetch --tags
+          $ver = git -C PowerTunerDaemon tag | Select-Object -Last 1
+          echo "PWTD_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout daemon tag
+        run: git -C PowerTunerDaemon checkout $env:PWTD_TAG
+
+      - name: Clone PowerTunerConsole
+        uses: actions/checkout@v6
+        with:
+          repository: PowerTuner/PowerTunerConsole
+          path: PowerTunerConsole
+          submodules: true
+
+      - name: get console tag
+        run: |
+          git -C PowerTunerConsole fetch --tags
+          $ver = git -C PowerTunerConsole tag | Select-Object -Last 1
+          echo "PWTCS_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout console tag
+        run: git -C PowerTunerConsole checkout $env:PWTCS_TAG
+
+      - name: Clone PowerTunerClient
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerClient
+          path: PowerTunerClient
+          submodules: true
+
+      - name: get client tag
+        run: |
+          git -C PowerTunerClient fetch --tags
+          $ver = git -C PowerTunerClient tag | Select-Object -Last 1
+          echo "PWTC_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout client tag
+        run: git -C PowerTunerClient checkout $env:PWTC_TAG
+
+      - name: Clone PowerTunerCLI
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerCLI
+          path: PowerTunerCLI
+          submodules: true
+
+      - name: get cli tag
+        run: |
+          git -C PowerTunerCLI fetch --tags        
+          $ver = git -C PowerTunerCLI tag | Select-Object -Last 1
+          echo "PWTCL_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout cli tag
+        run: git -C PowerTunerCLI checkout $env:PWTCL_TAG
+
+      - name: Clone PWTUninstall
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PWTUninstall
+          path: PWTUninstall
+          submodules: true
+
+      - name: get uninstaller tag
+        run: |
+          git -C PWTUninstall fetch --tags                
+          $ver = git -C PWTUninstall tag | Select-Object -Last 1
+          echo "PWTUS_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout uninstaller tag
+        run: git -C PWTUninstall checkout $env:PWTUS_TAG
+
+      - name: Clone PWTInstaller
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PWTInstaller
+          path: PWTInstaller
+          submodules: true
+
+      - name: get installer tag
+        run: |
+          git -C PWTInstaller fetch --tags                        
+          $ver = git -C PWTInstaller tag | Select-Object -Last 1
+          echo "PWTIS_TAG=$ver" >> $env:GITHUB_ENV
+
+      - name: checkout installer tag
+        run: git -C PWTInstaller checkout $env:PWTIS_TAG
+
+      - name: prepare release folders
+        run: |
+          mkdir "PowerTunerRelease"
+          mkdir PWTInstaller\src\Resources\release
+
+      - name: build daemon
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd PowerTunerDaemon
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\PowerTunerDaemon.exe ${{github.workspace}}\PWTInstaller\src\Resources\release
+           copy src\external\RyzenAdj\win32\inpoutx64.dll ${{github.workspace}}\PWTInstaller\src\Resources\release
+
+      - name: build deskop client
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd PowerTunerClient
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\PowerTunerClient.exe ${{github.workspace}}\PWTInstaller\src\Resources\release
+           copy build\PWTClientCommon.dll ${{github.workspace}}\PWTInstaller\src\Resources\release
+           copy build\PWTClientService.dll ${{github.workspace}}\PWTInstaller\src\Resources\release
+           copy build\PWTShared.dll ${{github.workspace}}\PWTInstaller\src\Resources\release
+           copy build\PWTWin32.dll ${{github.workspace}}\PWTInstaller\src\Resources\release
+
+      - name: build console client
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd PowerTunerConsole
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\PowerTunerConsole.exe ${{github.workspace}}\PWTInstaller\src\Resources\release
+
+      - name: build cli client
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd PowerTunerCLI
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\PowerTunerCLI.exe ${{github.workspace}}\PWTInstaller\src\Resources\release
+
+      - name: build uninstaller
+        shell: cmd
+        run: |
+           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+           cd PWTUninstall
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+           ninja -C build
+           copy build\PWTUninstall.exe ${{github.workspace}}\PWTInstaller\src\Resources\release
+
+      - name: build installer
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cd PWTInstaller
+          windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime src\Resources\release\PowerTunerDaemon.exe
+          windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime src\Resources\release\PowerTunerConsole.exe
+          windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime src\Resources\release\PowerTunerCLI.exe
+          windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime src\Resources\release\PowerTunerClient.exe
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+          ninja -C build
+
+      - name: pack installer
+        run: |
+          copy ${{github.workspace}}/PWTInstaller/build/PWTInstaller.exe ${{github.workspace}}/PowerTunerRelease
+          copy ${{github.workspace}}/PWTInstaller/build/PWTWin32.dll ${{github.workspace}}/PowerTunerRelease
+          windeployqt6.exe --no-translations --no-quick-import --no-opengl-sw --no-compiler-runtime ${{github.workspace}}/PowerTunerRelease/PWTInstaller.exe
+
+      - name: create release notes
+        run: >
+          "## Release content`r`n
+          `r`n
+          ### All                  
+          [PowerTunerDaemon $env:PWTD_TAG](https://github.com/PowerTuner/PowerTunerDaemon/tree/$env:PWTD_TAG)`r`n
+          [PowerTunerConsole $env:PWTCS_TAG](https://github.com/PowerTuner/PowerTunerConsole/tree/$env:PWTCS_TAG)`r`n
+          [PowerTunerClient $env:PWTC_TAG](https://github.com/PowerTuner/PowerTunerClient/tree/$env:PWTC_TAG)`r`n
+          [PowerTunerCLI $env:PWTCL_TAG](https://github.com/PowerTuner/PowerTunerCLI/tree/$env:PWTCL_TAG)`r`n
+          `r`n
+          ### Installer [_Windows only_]`r`n
+          [PWTUninstall $env:PWTUS_TAG](https://github.com/PowerTuner/PWTUninstall/tree/$env:PWTUS_TAG)`r`n
+          [PWTInstaller $env:PWTIS_TAG](https://github.com/PowerTuner/PWTInstaller/tree/$env:PWTIS_TAG)`r`n
+          `r`n
+          `r`n
+          _Note: Linux unpacked release requires manual installation._
+          `r`n
+          `r`n
+          [**Changelog**](https://github.com/PowerTuner/PowerTuner-releases/blob/main/CHANGELOG.md)" | Out-File rel_notes.md
+
+      - name: upload windows release
+        id: win_release_zip
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerWindows
+          path: PowerTunerRelease
+          retention-days: 1
+
+      - name: upload release notes
+        id: rel_notes
+        uses: actions/upload-artifact@main
+        with:
+          name: releaseNotes
+          path: rel_notes.md
+          retention-days: 1
+
+  linux_release:
+    runs-on: ubuntu-latest
+
+    outputs:
+      linux_release_pkg_id: ${{steps.linux_release_zip.outputs.artifact-id}}
+      linux_daemon_appimg_id: ${{steps.linux_daemon_appimg.outputs.artifact-id}}
+      linux_client_appimg_id: ${{steps.linux_client_appimg.outputs.artifact-id}}
+      linux_console_appimg_id: ${{steps.linux_console_appimg.outputs.artifact-id}}
+      linux_cli_appimg_id: ${{steps.linux_cli_appimg.outputs.artifact-id}}
+
+    steps:
+      - uses: actions/checkout@main
+
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.1'
+          modules: qtimageformats qtmultimedia qtspeech qtwaylandcompositor qtlottie
+
+      - name: install required libs
+        run: |
+          sudo apt-get update
+          sudo apt-get install libpci-dev libsystemd-dev libkmod-dev speech-dispatcher espeak-ng espeak
+
+      - name: install missing libtiff5
+        run: |
+          wget https://archive.ubuntu.com/ubuntu/pool/main/t/tiff/libtiff5_4.3.0-6ubuntu0.12_amd64.deb
+          sudo apt install ./libtiff5_4.3.0-6ubuntu0.12_amd64.deb
+
+      - name: download linuxdeploy and plugins
+        run: |
+          wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q --show-progress https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          curl -fsSLo linuxdeploy-plugin-checkrt.sh https://github.com/darealshinji/linuxdeploy-plugin-checkrt/releases/download/continuous/linuxdeploy-plugin-checkrt.sh
+          chmod +x linuxdeploy-plugin-checkrt.sh
+          chmod +x linuxdeploy-*.AppImage
+
+      - name: Clone PowerTunerDaemon
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerDaemon
+          path: PowerTunerDaemon
+          submodules: true
+
+      - name: get daemon tag
+        run: |
+          git -C PowerTunerDaemon fetch --tags
+          echo "PWTD_TAG=$(git -C PowerTunerDaemon tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout daemon tag
+        run: git -C PowerTunerDaemon checkout $PWTD_TAG
+
+      - name: Clone PowerTunerConsole
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerConsole
+          path: PowerTunerConsole
+          submodules: true
+
+      - name: get console tag
+        run: |
+          git -C PowerTunerConsole fetch --tags
+          echo "PWTCS_TAG=$(git -C PowerTunerConsole tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout console tag
+        run: git -C PowerTunerConsole checkout $PWTCS_TAG
+
+      - name: Clone PowerTunerClient
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerClient
+          path: PowerTunerClient
+          submodules: true
+
+      - name: get client tag
+        run: |
+          git -C PowerTunerClient fetch --tags
+          echo "PWTC_TAG=$(git -C PowerTunerClient tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout client tag
+        run: git -C PowerTunerClient checkout $PWTC_TAG
+
+      - name: Clone PowerTunerCLI
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerCLI
+          path: PowerTunerCLI
+          submodules: true
+
+      - name: get cli tag
+        run: |
+          git -C PowerTunerCLI fetch --tags
+          echo "PWTCL_TAG=$(git -C PowerTunerCLI tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout cli tag
+        run: git -C PowerTunerCLI checkout $PWTCL_TAG
+
+      - name: prepare release folders
+        run: mkdir "PowerTunerRelease"
+
+      - name: build daemon
+        run: |
+           cd PowerTunerDaemon
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr
+           make -C build -j`nproc` install
+
+      - name: prepare daemon appimage
+        run: |
+          mkdir -p PowerTunerDaemon/usr/share/metainfo      
+          mkdir PowerTunerDaemon/AppDir
+          mv PowerTunerDaemon/usr PowerTunerDaemon/AppDir/usr
+          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerDaemon/AppDir/usr/share/metainfo
+
+      - name: make daemon appimage
+        run: >
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerDaemon/AppDir/usr/lib
+          ./linuxdeploy-x86_64.AppImage
+          -d linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.desktop
+          -i linux/appimage/pwtdaemon/powerTunerDaemon.png
+          --appdir PowerTunerDaemon/AppDir
+          --plugin qt
+          --plugin checkrt
+          --output appimage
+
+      - name: upload daemon appimage
+        id: linux_daemon_appimg
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerDaemon-x86_64
+          path: PowerTunerDaemon-x86_64.AppImage
+          retention-days: 1
+
+      - name: build deskop client
+        run: |
+           cd PowerTunerClient
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr
+           make -C build -j`nproc` install
+
+      - name: prepare client appimage
+        run: |
+          mkdir -p PowerTunerClient/usr/share/metainfo      
+          mkdir PowerTunerClient/AppDir
+          mv PowerTunerClient/usr PowerTunerClient/AppDir/usr
+          cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerClient/AppDir/usr/share/metainfo
+
+      - name: make client appimage
+        run: >
+          EXTRA_PLATFORM_PLUGINS=libqwayland.so
+          EXTRA_QT_PLUGINS="svg;wayland-decoration-client;wayland-graphics-integration-client;wayland-shell-integration;waylandcompositor"
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerClient/AppDir/usr/lib
+          ./linuxdeploy-x86_64.AppImage
+          -d linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop
+          -i linux/appimage/pwtclient/powerTunerClient.png
+          --exclude-library=libwayland-client.so*
+          --appdir PowerTunerClient/AppDir
+          --plugin qt
+          --plugin checkrt
+          --output appimage
+
+      - name: upload client appimage
+        id: linux_client_appimg
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerClient-x86_64
+          path: PowerTunerClient-x86_64.AppImage
+          retention-days: 1
+
+      - name: build console client
+        run: |
+           cd PowerTunerConsole
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr
+           make -C build -j`nproc` install
+
+      - name: prepare console appimage
+        run: |
+          mkdir -p PowerTunerConsole/usr/share/metainfo      
+          mkdir PowerTunerConsole/AppDir
+          mv PowerTunerConsole/usr PowerTunerConsole/AppDir/usr
+          cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerConsole/AppDir/usr/share/metainfo
+
+      - name: make console appimage
+        run: >
+          EXTRA_PLATFORM_PLUGINS=libqwayland.so
+          EXTRA_QT_PLUGINS="svg;wayland-decoration-client;wayland-graphics-integration-client;wayland-shell-integration;waylandcompositor"
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerConsole/AppDir/usr/lib
+          ./linuxdeploy-x86_64.AppImage
+          -d linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop
+          -i linux/appimage/pwtconsole/powerTunerConsole.png
+          --exclude-library=libwayland-client.so*
+          --appdir PowerTunerConsole/AppDir
+          --plugin qt
+          --plugin checkrt
+          --output appimage
+
+      - name: upload console appimage
+        id: linux_console_appimg
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerConsole-x86_64
+          path: PowerTunerConsole-x86_64.AppImage
+          retention-days: 1
+
+      - name: build cli client
+        run: |
+           cd PowerTunerCLI
+           cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=usr
+           make -C build -j`nproc` install
+
+      - name: prepare cli appimage
+        run: |
+          mkdir -p PowerTunerCLI/usr/share/metainfo      
+          mkdir PowerTunerCLI/AppDir
+          mv PowerTunerCLI/usr PowerTunerCLI/AppDir/usr
+          cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerCLI/AppDir/usr/share/metainfo
+
+      - name: make cli appimage
+        run: >
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerCLI/AppDir/usr/lib
+          ./linuxdeploy-x86_64.AppImage
+          -d linux/appimage/pwtcli/org.powertuner.powertunercli.desktop
+          -i linux/appimage/pwtcli/powerTunerCLI.png
+          --appdir PowerTunerCLI/AppDir
+          --plugin qt
+          --plugin checkrt
+          --output appimage
+
+      - name: upload cli appimage
+        id: linux_cli_appimg
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerCLI-x86_64
+          path: PowerTunerCLI-x86_64.AppImage
+          retention-days: 1
+
+      - name: create unpacked linux release
+        run: |
+          mkdir -p PowerTunerLinuxUnpacked/bin
+          mkdir -p PowerTunerLinuxUnpacked/usr/share/applications
+          mkdir -p PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
+          mkdir -p PowerTunerLinuxUnpacked/usr/lib/systemd/system
+          mkdir PowerTunerLinuxUnpacked/lib
+          cp PowerTunerClient/AppDir/usr/bin/PowerTunerClient PowerTunerLinuxUnpacked/bin
+          cp PowerTunerConsole/AppDir/usr/bin/PowerTunerConsole PowerTunerLinuxUnpacked/bin
+          cp PowerTunerConsole/AppDir/usr/lib/libPWT* PowerTunerLinuxUnpacked/lib
+          cp PowerTunerCLI/AppDir/usr/bin/PowerTunerCLI PowerTunerLinuxUnpacked/bin
+          cp PowerTunerDaemon/AppDir/usr/bin/PowerTunerDaemon PowerTunerLinuxUnpacked/bin
+          cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerLinuxUnpacked/usr/share/applications
+          cp linux/appimage/pwtclient/powerTunerClient.png PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
+          cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerLinuxUnpacked/usr/share/applications
+          cp linux/appimage/pwtconsole/powerTunerConsole.png PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
+          cp linux/powertunerd.service PowerTunerLinuxUnpacked/usr/lib/systemd/system
+
+      - name: tar release
+        run: tar -czvf PowerTunerLinuxUnpacked.tar.gz PowerTunerLinuxUnpacked
+
+      - name: upload linux release
+        id: linux_release_zip
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerLinuxUnpacked
+          path: PowerTunerLinuxUnpacked.tar.gz
+          retention-days: 1
+
+  publish_release:
+    runs-on: ubuntu-latest
+    needs: [windows_release, linux_release]
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: get release artifacts
+        uses: actions/download-artifact@main
+        with:
+          artifact-ids: ${{needs.windows_release.outputs.win_release_pkg_id}},${{needs.linux_release.outputs.linux_release_pkg_id}},${{needs.linux_release.outputs.linux_client_appimg_id}},${{needs.linux_release.outputs.linux_cli_appimg_id}},${{needs.linux_release.outputs.linux_console_appimg_id}},${{needs.linux_release.outputs.linux_daemon_appimg_id}}
+
+      - name: get release notes
+        uses: actions/download-artifact@main
+        with:
+          artifact-ids: ${{needs.windows_release.outputs.rel_notes_pkg_id}}
+
+      - name: get release version
+        run: echo "REL_VER=$(cat version.txt)" >> $GITHUB_ENV
+
+      - name: zip windows release
+        run: zip -r -9 "PowerTunerWindows-$REL_VER.zip" PowerTunerWindows
+
+      - name: append version strings
+        run: |
+          mv PowerTunerCLI-x86_64/PowerTunerCLI-x86_64.AppImage PowerTunerCLI-x86_64/"PowerTunerCLI-x86_64-$REL_VER.AppImage"
+          mv PowerTunerClient-x86_64/PowerTunerClient-x86_64.AppImage PowerTunerClient-x86_64/"PowerTunerClient-x86_64-$REL_VER.AppImage"
+          mv PowerTunerConsole-x86_64/PowerTunerConsole-x86_64.AppImage PowerTunerConsole-x86_64/"PowerTunerConsole-x86_64-$REL_VER.AppImage"
+          mv PowerTunerDaemon-x86_64/PowerTunerDaemon-x86_64.AppImage PowerTunerDaemon-x86_64/"PowerTunerDaemon-x86_64-$REL_VER.AppImage"
+          mv PowerTunerLinuxUnpacked/PowerTunerLinuxUnpacked.tar.gz PowerTunerLinuxUnpacked/"PowerTunerLinuxUnpacked-$REL_VER.tar.gz"
+
+      - name: publish release
+        env:
+          GH_TOKEN: ${{ secrets.GTK }}
+          GH_REPO: ${{ github.repository }}
+        run: >
+          gh release create $REL_VER
+          "PowerTunerWindows-$REL_VER.zip"
+          PowerTunerLinuxUnpacked/"PowerTunerLinuxUnpacked-$REL_VER.tar.gz"
+          PowerTunerCLI-x86_64/"PowerTunerCLI-x86_64-$REL_VER.AppImage"
+          PowerTunerClient-x86_64/"PowerTunerClient-x86_64-$REL_VER.AppImage"
+          PowerTunerConsole-x86_64/"PowerTunerConsole-x86_64-$REL_VER.AppImage"
+          PowerTunerDaemon-x86_64/"PowerTunerDaemon-x86_64-$REL_VER.AppImage"
+          --draft=false
+          --latest
+          -t "PowerTuner $REL_VER"
+          -F rel_notes.md
