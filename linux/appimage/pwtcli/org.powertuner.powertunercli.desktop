@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=PowerTunerCLI
-Comment="PowerTuner CLI Client"
+GenericName=Tuning Utility
+Comment=PowerTuner CLI Client
 Exec=PowerTunerCLI
 Icon=powerTunerCLI
 Categories=Utility
