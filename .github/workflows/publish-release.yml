@@ -613,10 +613,6 @@ jobs:
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerArchLinux/usr/share/metainfo
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerArchLinux/usr/share/metainfo
-          cp linux/appimage/pwtcli/org.powertuner.powertunercli.desktop PowerTunerArchLinux/usr/share/applications
-          cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerArchLinux/usr/share/metainfo
-          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.desktop PowerTunerArchLinux/usr/share/applications
-          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerArchLinux/usr/share/metainfo
           cp -r linux/appimage/pwtclient/usr PowerTunerArchLinux
           cp -r linux/appimage/pwtconsole/usr PowerTunerArchLinux
           cp linux/powertunerd.service PowerTunerArchLinux/usr/lib/systemd/system
