@@ -489,9 +489,141 @@ jobs:
           path: PowerTunerLinuxUnpacked.tar.gz
           retention-days: 1
 
+  arch_release:
+    runs-on: ubuntu-latest
+
+    outputs:
+      arch_release_pkg_id: ${{steps.arch_release_zip.outputs.artifact-id}}
+
+    container:
+      image: archlinux:latest
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: install required packages
+        run: |
+          pacman -Sy
+          pacman -Syyu --noconfirm
+          pacman -S --noconfirm qt6-base qt6-speech kmod pciutils github-cli git base-devel cmake
+
+      - name: Clone PowerTunerDaemon
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerDaemon
+          path: PowerTunerDaemon
+          submodules: true
+
+      - name: get daemon tag
+        run: |
+          git -C PowerTunerDaemon fetch --tags
+          echo "PWTD_TAG=$(git -C PowerTunerDaemon tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout daemon tag
+        run: git -C PowerTunerDaemon checkout $PWTD_TAG
+
+      - name: Clone PowerTunerConsole
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerConsole
+          path: PowerTunerConsole
+          submodules: true
+
+      - name: get console tag
+        run: |
+          git -C PowerTunerConsole fetch --tags
+          echo "PWTCS_TAG=$(git -C PowerTunerConsole tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout console tag
+        run: git -C PowerTunerConsole checkout $PWTCS_TAG
+
+      - name: Clone PowerTunerClient
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerClient
+          path: PowerTunerClient
+          submodules: true
+
+      - name: get client tag
+        run: |
+          git -C PowerTunerClient fetch --tags
+          echo "PWTC_TAG=$(git -C PowerTunerClient tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout client tag
+        run: git -C PowerTunerClient checkout $PWTC_TAG
+
+      - name: Clone PowerTunerCLI
+        uses: actions/checkout@main
+        with:
+          repository: PowerTuner/PowerTunerCLI
+          path: PowerTunerCLI
+          submodules: true
+
+      - name: get cli tag
+        run: |
+          git -C PowerTunerCLI fetch --tags
+          echo "PWTCL_TAG=$(git -C PowerTunerCLI tag | tail -n 1)" >> $GITHUB_ENV
+
+      - name: checkout cli tag
+        run: git -C PowerTunerCLI checkout $PWTCL_TAG
+
+      - name: build daemon
+        run: |
+          cd PowerTunerDaemon
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          make -C build -j`nproc`
+
+      - name: build deskop client
+        run: |
+          cd PowerTunerClient
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          make -C build -j`nproc`
+
+      - name: build console client
+        run: |
+          cd PowerTunerConsole
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          make -C build -j`nproc`
+
+      - name: build cli client
+        run: |
+          cd PowerTunerCLI
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          make -C build -j`nproc`
+
+      - name: create archlinux release
+        run: |
+          mkdir -p PowerTunerArchLinux/usr/bin
+          mkdir -p PowerTunerArchLinux/usr/share/applications
+          mkdir -p PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
+          mkdir -p PowerTunerArchLinux/usr/lib/systemd/system
+          cp PowerTunerClient/build/PowerTunerClient PowerTunerArchLinux/usr/bin
+          cp PowerTunerConsole/build/PowerTunerConsole PowerTunerArchLinux/usr/bin
+          cp PowerTunerCLI/build/PowerTunerCLI PowerTunerArchLinux/usr/bin
+          cp PowerTunerDaemon/build/PowerTunerDaemon PowerTunerArchLinux/usr/bin
+          cp PowerTunerConsole/build/src/external/libPWTShared/libPWT* PowerTunerArchLinux/usr/lib
+          cp PowerTunerConsole/build/src/external/libPWTClientService/libPWT* PowerTunerArchLinux/usr/lib
+          cp PowerTunerConsole/build/src/external/libPWTClientCommon/libPWT* PowerTunerArchLinux/usr/lib          
+          cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerArchLinux/usr/share/applications
+          cp linux/appimage/pwtclient/powerTunerClient.png PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
+          cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerArchLinux/usr/share/applications
+          cp linux/appimage/pwtconsole/powerTunerConsole.png PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
+          cp linux/powertunerd.service PowerTunerArchLinux/usr/lib/systemd/system
+
+      - name: tar release
+        run: tar -czvf PowerTunerArchLinux.tar.gz PowerTunerArchLinux
+
+      - name: upload arch release
+        id: arch_release_zip
+        uses: actions/upload-artifact@main
+        with:
+          name: PowerTunerArchLinux
+          path: PowerTunerArchLinux.tar.gz
+          retention-days: 1
+
   publish_release:
     runs-on: ubuntu-latest
-    needs: [windows_release, linux_release]
+    needs: [windows_release, linux_release, arch_release]
 
     steps:
       - uses: actions/checkout@main
@@ -499,7 +631,7 @@ jobs:
       - name: get release artifacts
         uses: actions/download-artifact@main
         with:
-          artifact-ids: ${{needs.windows_release.outputs.win_release_pkg_id}},${{needs.linux_release.outputs.linux_release_pkg_id}},${{needs.linux_release.outputs.linux_client_appimg_id}},${{needs.linux_release.outputs.linux_cli_appimg_id}},${{needs.linux_release.outputs.linux_console_appimg_id}},${{needs.linux_release.outputs.linux_daemon_appimg_id}}
+          artifact-ids: ${{needs.windows_release.outputs.win_release_pkg_id}},${{needs.linux_release.outputs.linux_release_pkg_id}},${{needs.linux_release.outputs.linux_client_appimg_id}},${{needs.linux_release.outputs.linux_cli_appimg_id}},${{needs.linux_release.outputs.linux_console_appimg_id}},${{needs.linux_release.outputs.linux_daemon_appimg_id}},${{needs.arch_release.outputs.arch_release_pkg_id}}
 
       - name: get release notes
         uses: actions/download-artifact@main
@@ -519,6 +651,7 @@ jobs:
           mv PowerTunerConsole-x86_64/PowerTunerConsole-x86_64.AppImage PowerTunerConsole-x86_64/"PowerTunerConsole-x86_64-$REL_VER.AppImage"
           mv PowerTunerDaemon-x86_64/PowerTunerDaemon-x86_64.AppImage PowerTunerDaemon-x86_64/"PowerTunerDaemon-x86_64-$REL_VER.AppImage"
           mv PowerTunerLinuxUnpacked/PowerTunerLinuxUnpacked.tar.gz PowerTunerLinuxUnpacked/"PowerTunerLinuxUnpacked-$REL_VER.tar.gz"
+          mv PowerTunerArchLinux/PowerTunerArchLinux.tar.gz PowerTunerArchLinux/"PowerTunerArchLinux-$REL_VER.tar.gz"
 
       - name: publish release
         env:
@@ -528,6 +661,7 @@ jobs:
           gh release create $REL_VER
           "PowerTunerWindows-$REL_VER.zip"
           PowerTunerLinuxUnpacked/"PowerTunerLinuxUnpacked-$REL_VER.tar.gz"
+          PowerTunerArchLinux/"PowerTunerArchLinux-$REL_VER.tar.gz"
           PowerTunerCLI-x86_64/"PowerTunerCLI-x86_64-$REL_VER.AppImage"
           PowerTunerClient-x86_64/"PowerTunerClient-x86_64-$REL_VER.AppImage"
           PowerTunerConsole-x86_64/"PowerTunerConsole-x86_64-$REL_VER.AppImage"
