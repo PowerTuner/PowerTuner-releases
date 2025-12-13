@@ -378,7 +378,7 @@ jobs:
           LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerClient/AppDir/usr/lib
           ./linuxdeploy-x86_64.AppImage
           -d linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop
-          -i linux/appimage/pwtclient/powerTunerClient.png
+          -i linux/appimage/pwtclient/usr/share/icons/hicolor/256x256/apps/powerTunerClient.png
           --exclude-library=libwayland-client.so*
           --appdir PowerTunerClient/AppDir
           --plugin qt
@@ -413,7 +413,7 @@ jobs:
           LD_LIBRARY_PATH=$LD_LIBRARY_PATH:PowerTunerConsole/AppDir/usr/lib
           ./linuxdeploy-x86_64.AppImage
           -d linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop
-          -i linux/appimage/pwtconsole/powerTunerConsole.png
+          -i linux/appimage/pwtconsole/usr/share/icons/hicolor/256x256/apps/powerTunerConsole.png
           --exclude-library=libwayland-client.so*
           --appdir PowerTunerConsole/AppDir
           --plugin qt
@@ -464,7 +464,6 @@ jobs:
         run: |
           mkdir -p PowerTunerLinuxUnpacked/usr/bin
           mkdir -p PowerTunerLinuxUnpacked/usr/share/applications
-          mkdir -p PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
           mkdir -p PowerTunerLinuxUnpacked/usr/lib/systemd/system
           mkdir PowerTunerLinuxUnpacked/usr/share/metainfo
           cp PowerTunerClient/AppDir/usr/bin/PowerTunerClient PowerTunerLinuxUnpacked/usr/bin
@@ -473,15 +472,15 @@ jobs:
           cp PowerTunerCLI/AppDir/usr/bin/PowerTunerCLI PowerTunerLinuxUnpacked/usr/bin
           cp PowerTunerDaemon/AppDir/usr/bin/PowerTunerDaemon PowerTunerLinuxUnpacked/usr/bin
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtclient/powerTunerClient.png PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerArchLinux/usr/share/metainfo
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtconsole/powerTunerConsole.png PowerTunerLinuxUnpacked/usr/icon/hicolor/256x256/apps
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerArchLinux/usr/share/metainfo        
           cp linux/appimage/pwtcli/org.powertuner.powertunercli.desktop PowerTunerLinuxUnpacked/usr/share/applications
           cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerArchLinux/usr/share/metainfo                  
           cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerArchLinux/usr/share/metainfo                            
+          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerArchLinux/usr/share/metainfo
+          cp -r linux/appimage/pwtclient/usr PowerTunerLinuxUnpacked
+          cp -r linux/appimage/pwtconsole/usr PowerTunerLinuxUnpacked
           cp linux/powertunerd.service PowerTunerLinuxUnpacked/usr/lib/systemd/system
 
       - name: tar release
@@ -601,7 +600,6 @@ jobs:
         run: |
           mkdir -p PowerTunerArchLinux/usr/bin
           mkdir -p PowerTunerArchLinux/usr/share/applications
-          mkdir -p PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
           mkdir -p PowerTunerArchLinux/usr/lib/systemd/system
           mkdir PowerTunerArchLinux/usr/share/metainfo
           cp PowerTunerClient/build/PowerTunerClient PowerTunerArchLinux/usr/bin
@@ -613,14 +611,14 @@ jobs:
           cp PowerTunerConsole/build/src/external/libPWTClientCommon/libPWT* PowerTunerArchLinux/usr/lib          
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerArchLinux/usr/share/metainfo
-          cp linux/appimage/pwtclient/powerTunerClient.png PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerArchLinux/usr/share/metainfo
-          cp linux/appimage/pwtconsole/powerTunerConsole.png PowerTunerArchLinux/usr/icon/hicolor/256x256/apps
           cp linux/appimage/pwtcli/org.powertuner.powertunercli.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerArchLinux/usr/share/metainfo
           cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerArchLinux/usr/share/metainfo
+          cp -r linux/appimage/pwtclient/usr PowerTunerArchLinux
+          cp -r linux/appimage/pwtconsole/usr PowerTunerArchLinux
           cp linux/powertunerd.service PowerTunerArchLinux/usr/lib/systemd/system
 
       - name: tar release
