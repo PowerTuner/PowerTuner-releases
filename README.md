@@ -2,6 +2,8 @@
 
 Download latest PowerTuner release [here](https://github.com/PowerTuner/PowerTuner-releases/releases).
 
+Official ArchLinux package [here](https://aur.archlinux.org/packages/powertuner).
+
 ## Packages
 
 ### Windows
