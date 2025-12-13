@@ -6,7 +6,7 @@ Download latest PowerTuner release [here](https://github.com/PowerTuner/PowerTun
 
 ### Windows
 
-Download **PowerTunerWindows-1.0.zip**.
+Download **PowerTunerWindows.zip**.
 
 ### Linux
 
