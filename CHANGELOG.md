@@ -1,4 +1,4 @@
-### Future
+### 1.1
 
 - Fix GPU name being shown as generic vendor string instead of the marketing name (for GPUs in database)
 - Add built-in input ranges for GPD Win 5 (stock and recommended values by GPD)
