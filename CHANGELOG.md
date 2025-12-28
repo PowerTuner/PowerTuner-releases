@@ -9,6 +9,7 @@
 - Console/Desktop client: Intel: HWP: add 'Prefer OS setting' checkbox
 - CLI client: AMD: RyzenAdj: set settings with no read command as ignored unless defined by the user to avoid potential issues (like writing bad values)
 - Console/Desktop client: AMD: RyzenAdj: add enable checkbox to settings with no read command to avoid potential issues (like writing bad values)
+- Attempt to fix checkboxes when display scaling is set
 
 ### 1.0
 
