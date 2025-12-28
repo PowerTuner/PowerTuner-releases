@@ -472,13 +472,9 @@ jobs:
           cp PowerTunerCLI/AppDir/usr/bin/PowerTunerCLI PowerTunerLinuxUnpacked/usr/bin
           cp PowerTunerDaemon/AppDir/usr/bin/PowerTunerDaemon PowerTunerLinuxUnpacked/usr/bin
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerArchLinux/usr/share/metainfo
+          cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerLinuxUnpacked/usr/share/metainfo
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerArchLinux/usr/share/metainfo        
-          cp linux/appimage/pwtcli/org.powertuner.powertunercli.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerArchLinux/usr/share/metainfo                  
-          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.desktop PowerTunerLinuxUnpacked/usr/share/applications
-          cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerArchLinux/usr/share/metainfo
+          cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerLinuxUnpacked/usr/share/metainfo
           cp -r linux/appimage/pwtclient/usr PowerTunerLinuxUnpacked
           cp -r linux/appimage/pwtconsole/usr PowerTunerLinuxUnpacked
           cp linux/powertunerd.service PowerTunerLinuxUnpacked/usr/lib/systemd/system
