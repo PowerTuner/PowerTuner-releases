@@ -5,6 +5,10 @@
 - AMD: RyzenAdj: set 0 as minimum for vrm current sliders
 - libPWTClientService: fix DAEMON_CMD_FAIL cmd not stopping the failed cmd timer (fixes log spam in clients)
 - AMD: RyzenAdj: disable curve optimizer for strix halo (tested, command is rejected, no known report of that being correct)
+- Console client: fix top section title not being shown once hidden by scrolling using gamepad navigation
+- Console/Desktop client: Intel: HWP: add 'Prefer OS setting' checkbox
+- CLI client: AMD: RyzenAdj: set settings with no read command as ignored unless defined by the user to avoid potential issues (like writing bad values)
+- Console/Desktop client: AMD: RyzenAdj: add enable checkbox to settings with no read command to avoid potential issues (like writing bad values)
 
 ### 1.0
 
