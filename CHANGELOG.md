@@ -1,3 +1,9 @@
+### 1.2
+- Desktop client: fix sanitizer memory leak warnings
+- Console client: use the correct invalid value for the joystick ID
+- Console client: update SDL to 3.4.0
+- Daemon: fix various warnings and errors
+
 ### 1.1
 
 - Fix GPU name being shown as generic vendor string instead of the marketing name (for GPUs in database)
