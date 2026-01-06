@@ -1,3 +1,7 @@
+### 1.3
+- Daemon: fix settings re-apply on wake from sleep, if enabled
+- libPWTShared: minor optimizations
+
 ### 1.2
 - Desktop client: fix sanitizer memory leak warnings
 - Console client: use the correct invalid value for the joystick ID
