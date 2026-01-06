@@ -79,7 +79,7 @@ jobs:
 
       - name: get cli tag
         run: |
-          git -C PowerTunerCLI fetch --tags        
+          git -C PowerTunerCLI fetch --tags
           $ver = git -C PowerTunerCLI tag | Select-Object -Last 1
           echo "PWTCL_TAG=$ver" >> $env:GITHUB_ENV
 
@@ -95,7 +95,7 @@ jobs:
 
       - name: get uninstaller tag
         run: |
-          git -C PWTUninstall fetch --tags                
+          git -C PWTUninstall fetch --tags
           $ver = git -C PWTUninstall tag | Select-Object -Last 1
           echo "PWTUS_TAG=$ver" >> $env:GITHUB_ENV
 
@@ -111,7 +111,7 @@ jobs:
 
       - name: get installer tag
         run: |
-          git -C PWTInstaller fetch --tags                        
+          git -C PWTInstaller fetch --tags
           $ver = git -C PWTInstaller tag | Select-Object -Last 1
           echo "PWTIS_TAG=$ver" >> $env:GITHUB_ENV
 
@@ -193,7 +193,11 @@ jobs:
 
       - name: create release notes
         run: >
-          "## Release content`r`n
+          "## Changelog`r`n
+          `r`n
+          See a brief description of changes [here](https://github.com/PowerTuner/PowerTuner-releases/blob/main/CHANGELOG.md)`r`n
+          `r`n
+          ## Release content`r`n
           `r`n
           ### All`r`n
           [PowerTunerDaemon $env:PWTD_TAG](https://github.com/PowerTuner/PowerTunerDaemon/tree/$env:PWTD_TAG)`r`n
@@ -205,11 +209,13 @@ jobs:
           [PWTUninstall $env:PWTUS_TAG](https://github.com/PowerTuner/PWTUninstall/tree/$env:PWTUS_TAG)`r`n
           [PWTInstaller $env:PWTIS_TAG](https://github.com/PowerTuner/PWTInstaller/tree/$env:PWTIS_TAG)`r`n
           `r`n
+          ## Linux release notes`r`n
           `r`n
-          _Note: Linux unpacked release requires manual installation._
-          `r`n
-          `r`n
-          [**Changelog**](https://github.com/PowerTuner/PowerTuner-releases/blob/main/CHANGELOG.md)" | Out-File rel_notes.md
+          Official AUR package [here](https://aur.archlinux.org/packages/powertuner).`r`n
+          _PowerTunerLinuxUnpacked_ is built for latest Ubuntu, or compatible distros, and requires manual installation.`r`n
+          _PowerTunerArchLinux_ is built for ArchLinux, or compatible distros, and requires manual installation.`r`n
+          AppImages can be run on any distro and does not require special instructions.`r`n
+          `r`n" | Out-File rel_notes.md
 
       - name: upload windows release
         id: win_release_zip
@@ -334,7 +340,7 @@ jobs:
 
       - name: prepare daemon appimage
         run: |
-          mkdir -p PowerTunerDaemon/usr/share/metainfo      
+          mkdir -p PowerTunerDaemon/usr/share/metainfo
           mkdir PowerTunerDaemon/AppDir
           mv PowerTunerDaemon/usr PowerTunerDaemon/AppDir/usr
           cp linux/appimage/pwtdaemon/org.powertuner.powertunerdaemon.appdata.xml PowerTunerDaemon/AppDir/usr/share/metainfo
@@ -366,7 +372,7 @@ jobs:
 
       - name: prepare client appimage
         run: |
-          mkdir -p PowerTunerClient/usr/share/metainfo      
+          mkdir -p PowerTunerClient/usr/share/metainfo
           mkdir PowerTunerClient/AppDir
           mv PowerTunerClient/usr PowerTunerClient/AppDir/usr
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerClient/AppDir/usr/share/metainfo
@@ -401,7 +407,7 @@ jobs:
 
       - name: prepare console appimage
         run: |
-          mkdir -p PowerTunerConsole/usr/share/metainfo      
+          mkdir -p PowerTunerConsole/usr/share/metainfo
           mkdir PowerTunerConsole/AppDir
           mv PowerTunerConsole/usr PowerTunerConsole/AppDir/usr
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.appdata.xml PowerTunerConsole/AppDir/usr/share/metainfo
@@ -436,7 +442,7 @@ jobs:
 
       - name: prepare cli appimage
         run: |
-          mkdir -p PowerTunerCLI/usr/share/metainfo      
+          mkdir -p PowerTunerCLI/usr/share/metainfo
           mkdir PowerTunerCLI/AppDir
           mv PowerTunerCLI/usr PowerTunerCLI/AppDir/usr
           cp linux/appimage/pwtcli/org.powertuner.powertunercli.appdata.xml PowerTunerCLI/AppDir/usr/share/metainfo
@@ -604,7 +610,7 @@ jobs:
           cp PowerTunerDaemon/build/PowerTunerDaemon PowerTunerArchLinux/usr/bin
           cp PowerTunerConsole/build/src/external/libPWTShared/libPWT* PowerTunerArchLinux/usr/lib
           cp PowerTunerConsole/build/src/external/libPWTClientService/libPWT* PowerTunerArchLinux/usr/lib
-          cp PowerTunerConsole/build/src/external/libPWTClientCommon/libPWT* PowerTunerArchLinux/usr/lib          
+          cp PowerTunerConsole/build/src/external/libPWTClientCommon/libPWT* PowerTunerArchLinux/usr/lib
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.desktop PowerTunerArchLinux/usr/share/applications
           cp linux/appimage/pwtclient/org.powertuner.powertunerclient.appdata.xml PowerTunerArchLinux/usr/share/metainfo
           cp linux/appimage/pwtconsole/org.powertuner.powertunerconsole.desktop PowerTunerArchLinux/usr/share/applications
