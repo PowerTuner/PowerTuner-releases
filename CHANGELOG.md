@@ -1,3 +1,6 @@
+### 1.4
+- Desktop/Console client: Windows: fix startup registration
+
 ### 1.3
 - Daemon: fix settings re-apply on wake from sleep, if enabled
 - libPWTShared: minor optimizations
