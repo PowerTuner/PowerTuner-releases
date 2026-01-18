@@ -214,7 +214,7 @@ jobs:
           Official AUR package [here](https://aur.archlinux.org/packages/powertuner).`r`n
           _PowerTunerLinuxUnpacked_ is built for latest Ubuntu, or compatible distros, and requires manual installation.`r`n
           _PowerTunerArchLinux_ is built for ArchLinux, or compatible distros, and requires manual installation.`r`n
-          AppImages can be run on any distro and does not require special instructions.`r`n
+          AppImages can be run on any distro and do not require special instructions.`r`n
           `r`n" | Out-File rel_notes.md
 
       - name: upload windows release
