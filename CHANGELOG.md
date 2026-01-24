@@ -1,3 +1,7 @@
+### Future
+- Daemon: sync with upstream ryzenadj (improved support for strix point)
+- Console client: update SDL gamepads db
+
 ### 1.4
 - Desktop/Console client: Windows: fix startup registration
 
