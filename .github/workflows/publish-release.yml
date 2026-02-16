@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.1'
+          version: '6.10.2'
           modules: qtimageformats qtmultimedia qtspeech qtlottie
 
       - name: Clone PowerTunerDaemon
@@ -248,7 +248,7 @@ jobs:
 
       - uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.1'
+          version: '6.10.2'
           modules: qtimageformats qtmultimedia qtspeech qtwaylandcompositor qtlottie
 
       - name: install required libs
