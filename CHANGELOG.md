@@ -1,6 +1,8 @@
-### Future
+### 1.5
 - Daemon: sync with upstream ryzenadj (improved support for strix point)
 - Console client: update SDL gamepads db
+- Console client: update SDL to 3.4.2
+- Update Qt to 6.10.2
 
 ### 1.4
 - Desktop/Console client: Windows: fix startup registration
